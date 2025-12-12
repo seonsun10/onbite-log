@@ -2,15 +2,17 @@ import type { Session } from "@supabase/supabase-js";
 import { create } from "zustand";
 import { combine, devtools } from "zustand/middleware";
 
+// 상태를 관리하는 타입 정의
 type State = {
   isLoaded: boolean;
   session: Session | null;
 };
 
+// 초기 상태 정의
 const initialState = {
   isLoaded: false,
   session: null,
-} as State;
+} as State; // 타입 단언을 사용 
 
 const useSessionStore = create(
   devtools(
