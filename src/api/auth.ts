@@ -17,6 +17,7 @@ export async function signUp({
 }
 
 // 로그인 요청
+// email, pw 객체로 받음
 export async function signInWithPassword({
   email,
   password,

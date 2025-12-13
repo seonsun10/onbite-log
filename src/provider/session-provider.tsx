@@ -1,11 +1,21 @@
 import supabase from "@/lib/supabase";
 import { useEffect, type ReactNode } from "react";
-import { useIsSessionLoaded, useSetSession } from "@/store/session";
+import { useIsSessionLoaded, useSession, useSetSession } from "@/store/session";
 import GlobalLoader from "@/components/global-loader";
+import { useProfileData } from "@/hooks/queries/use-profile-data";
 
 export default function SessionProvider({ children }: { children: ReactNode }) {
+  const session = useSession();
   const setSession = useSetSession();
   const isSessionLoaded = useIsSessionLoaded();
+
+  // 세션에 아이디 있는 경우 자동으로 나의 프로필 조회
+  // 없을경우 프로필 생성하고 생성된 프로필 정보 반환
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    isPending,
+  } = useProfileData(session?.user.id); //세션에 있는 user정보의 id가 나의 id이기 때문에
 
   useEffect(() => {
     // Supabase의 인증 상태 변화를 감지하는 이벤트 리스너
@@ -19,6 +29,7 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
   // 세션 로딩이 완료되지 않았을 경우 로딩 화면을 보여줌
   // 이를 통해 인증 정보가 없는 상태에서 페이지가 깜빡이는 것을 방지
   if (!isSessionLoaded) return <GlobalLoader />;
+  if (isProfileLoading) return <GlobalLoader />;
 
   // 세션 로딩이 완료되면 실제 자식 컴포넌트들을 렌더링
   return children;

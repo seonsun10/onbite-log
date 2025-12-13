@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function ForgetPasswordPage() {
+  // 이메일 상태
   const [email, setEmail] = useState("");
 
   const {
@@ -24,6 +25,7 @@ export default function ForgetPasswordPage() {
       toast.error(message, {
         position: "top-center",
       });
+
       setEmail("");
     },
   });
