@@ -44,3 +44,25 @@ export async function signInWithOAuth(provider: Provider) {
 
   return data;
 }
+
+// 인증메일 요청
+export async function requestPaswordResetEmail(email: string) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${import.meta.env.VITE_PUBLIC_URL}/reset-password`,
+  });
+
+  if (error) throw error;
+
+  return data;
+}
+
+// 비밀번호 재설정
+export async function updatePassword(password: string) {
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) throw error;
+
+  return data;
+}
