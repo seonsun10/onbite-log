@@ -2,6 +2,7 @@ import { useOpenPostEditorModal } from "@/store/post-editor-modal";
 import { PlusCircleIcon } from "lucide-react";
 
 export default function CreatePostButton() {
+  // Open기능만 구독한 Store
   const openPostEditorModal = useOpenPostEditorModal();
 
   return (
