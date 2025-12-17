@@ -1,10 +1,10 @@
-import { createPost } from "@/api/post";
+import {  createPostWithImages } from "@/api/post";
 import type { UseMutationCallback } from "@/type";
 import { useMutation } from "@tanstack/react-query";
 
 export function useCreatePost(callbacks?: UseMutationCallback) {
   return useMutation({
-    mutationFn: createPost,
+    mutationFn: createPostWithImages,
     onSuccess: function () {
       if (callbacks?.onSuccess) callbacks.onSuccess();
     },

@@ -7,6 +7,7 @@ import { useCreatePost } from "@/hooks/mutations/post/use-create-post";
 import { toast } from "sonner";
 import { generateErrorMessagee } from "@/lib/error";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
+import { useSession } from "@/store/session";
 
 // 이미지 State 타입 정의
 type Image = {
@@ -15,6 +16,7 @@ type Image = {
 };
 
 export default function PostEditorModal() {
+  const session = useSession();
   const { isOpen, close } = usePostEditorModal();
 
   // 포스트 생성 뮤테이션 호출
@@ -42,10 +44,15 @@ export default function PostEditorModal() {
     close();
   };
 
+  // 게시글 생성 이벤트
   const handleCreatePostClick = () => {
     if (content.trim() === "") return;
 
-    createPost(content);
+    createPost({
+      content,
+      images: images.map((item) => item.file),
+      userId: session!.user.id,
+    });
   };
 
   const handleSelectImages = (e: ChangeEvent<HTMLInputElement>) => {
