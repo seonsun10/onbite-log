@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { generateErrorMessagee } from "@/lib/error";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { useSession } from "@/store/session";
+import { useOpenAlertModal } from "@/store/alert-modal";
 
 // 이미지 State 타입 정의
 type Image = {
@@ -17,6 +18,7 @@ type Image = {
 
 export default function PostEditorModal() {
   const session = useSession();
+  const openAlertModal = useOpenAlertModal();
   const { isOpen, close } = usePostEditorModal();
 
   // 포스트 생성 뮤테이션 호출
@@ -40,7 +42,20 @@ export default function PostEditorModal() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 포스트작성 Modal이 닫힐 때
   const handleCloseModal = () => {
+    if (content !== "" || images.length > 0) {
+      // AlertModal 호출
+      openAlertModal({
+        title: "게시글 작성이 마무리 되지 않았습니다.",
+        description: "이 화면에서 나가면 작성중이던 내용이 사라집니다.",
+        onPositive: () => {
+          close();
+        },
+      });
+
+      return;
+    }
     close();
   };
 
