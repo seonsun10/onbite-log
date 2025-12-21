@@ -42,6 +42,28 @@ export default function PostEditorModal() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // useEffect를 사용하여 content를 입력할 때마다 textarea의 높이를 자동 조정
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  }, [content]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      // 팝업을 닫을 때 이미지 url 메모리에서 제거
+      images.forEach((image) => {
+        URL.revokeObjectURL(image.previewUrl);
+      });
+      return;
+    }
+    textareaRef.current?.focus(); // Modal창이 열렸을 경우 텍스트 입력 칸에 자동 포커싱
+    setContent(""); // 입력중인 텍스트 제거
+    setImages([]); // 창이 닫혔을 떄 이미지 삭제
+  }, [isOpen]);
+
   // 포스트작성 Modal이 닫힐 때
   const handleCloseModal = () => {
     if (content !== "" || images.length > 0) {
@@ -95,23 +117,10 @@ export default function PostEditorModal() {
     setImages((prevImages) =>
       prevImages.filter((item) => item.previewUrl !== image.previewUrl),
     );
+
+    // 삭제할 이미지를 메모리에서 제거
+    URL.revokeObjectURL(image.previewUrl);
   };
-
-  // useEffect를 사용하여 content를 입력할 때마다 textarea의 높이를 자동 조정
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height =
-        textareaRef.current.scrollHeight + "px";
-    }
-  }, [content]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    textareaRef.current?.focus(); // Modal창이 열렸을 경우 텍스트 입력 칸에 자동 포커싱
-    setContent(""); // 입력중인 텍스트 제거
-    setImages([]); // 창이 닫혔을 떄 이미지 삭제
-  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCloseModal}>
