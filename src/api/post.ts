@@ -3,11 +3,12 @@ import { uploadImage } from "./image";
 import type { PostEntity } from "@/type";
 
 // 포스트 조회
-export async function fetchPosts() {
+export async function fetchPosts({ from, to }: { from: number; to: number }) {
   const { data, error } = await supabase
     .from("post")
     .select("*, author: profile!author_id (*)") // author라는 컬럼에 profile테이블 데이터를 join - author_id를 기준으로
-    .order("created_at", { ascending: false }); // 날짜 기준 내림차순
+    .order("created_at", { ascending: false }) // 날짜 기준 내림차순
+    .range(from, to); // 페이징
 
   if (error) throw error;
 
